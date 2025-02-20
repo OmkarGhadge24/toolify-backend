@@ -43,10 +43,18 @@ app.use('/api/pdf', pdfRoutes);
 // MongoDB Connection
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/toolify");
-    console.log("MongoDB connected successfully!");
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    };
+    
+    await mongoose.connect(process.env.MONGODB_URI, options);
+    console.log("MongoDB Atlas connected successfully!");
   } catch (error) {
-    console.error("MongoDB connection error:", error);
+    console.error("MongoDB connection error:", error.message);
+    console.log("Retrying connection in 5 seconds...");
     setTimeout(connectDB, 5000);
   }
 };
